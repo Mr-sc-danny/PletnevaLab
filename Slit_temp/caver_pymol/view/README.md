@@ -1,14 +1,17 @@
-# CAVER PyMOL View
+# CAVER PyMOL Static View
 
-The scripts in this folder share the same underlying generated PyMOL logic.
-They differ mainly by dataset-specific paths, output names, or tunnel settings.
-Files are flattened with a source label so the variants stay together.
-- mouth/2042/caver_out_2042_with_heme_1000_3000/pymol/view/view.py
-- mouth/2042f/caver_out_2042f_with_heme/pymol/view/view.py
-- mouth/2042f/caver_out_2042f_with_heme_1000_3000/pymol/view/view.py
-- mouth/2042f/caver_out_2042f_without_heme/pymol/view/view.py
-- mouth/caver_out_2042_strict/pymol/view/view.py
-- mouth/caver_out_2042f_new/pymol/view/view.py
-- mouth/caver_out_2042f_new_strict/pymol/view/view.py
-- mouth/ht552/caver_out_ht552_with_heme/pymol/view/view.py
-- mouth/trash/caver_out_noheme/pymol/view/view.py
+## Purpose
+
+Loads and styles a generated CAVER tunnel scene in PyMOL. This family is intended for static inspection of tunnel geometry, structures, and coloring.
+
+## Input and calculation
+
+The generated code expects the matching CAVER tunnel assets and PyMOL support files. It loads objects, applies generated styles, and configures the scene.
+
+## Usage
+
+Run the dataset-specific `pymol_view.py` from PyMOL with its matching generated files and helper modules available.
+
+## Output
+
+Produces a rendered static CAVER tunnel scene in PyMOL, which can be saved as a session or image.

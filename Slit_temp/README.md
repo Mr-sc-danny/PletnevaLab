@@ -22,4 +22,4 @@ Each maintained analysis script uses explicit input-configuration, calculation, 
 
 ## Repository coverage
 
-The current `PletnevaLabForBots` repository contains the 13 Python scripts from this Slit folder. The parent `PletenevaLab` repository also contains `Agilent_UV_Extractor/extract_spectra.py` and `Echem_process/plot_together.py`; those two files are outside this authorized Slit-only change and therefore are not modified here.
+The companion `PletnevaLabForBots` repository contains all 15 Python files from the parent `PletenevaLab` repository plus `Echem_process/UVVis_Redox_Workup.ipynb`. Its root is intentionally flat so every code or notebook file has a matching `<filename>_readme.md` documentation file.
