@@ -1,9 +1,12 @@
 # UV-Vis Redox Titration Workup
 
-Python replacement for the original MATLAB workflow (`asc_to_xlsx_Voltage.m`,
-`data_analyse.m`, `Echem_plot_together.m`): turn raw `.asc` spectra into a fitted
-midpoint potential, for both an oxidative and a reductive sweep, and plot the two
+A two-part pipeline for turning UV-Vis spectroelectrochemical titration data into a fitted
+midpoint reduction potential, for both an oxidative and a reductive sweep, then plotting the two
 together.
+
+**What it does, end to end:** raw `.SPC` spectra → baseline-corrected spectra → reduced/oxidized
+fraction at each applied voltage → a fitted Boltzmann/Nernst curve (one or two potentials) with a
+95% confidence interval → a combined oxidative/reductive plot.
 
 Two pieces, run in this order:
 
@@ -27,7 +30,7 @@ Open `UVVis_Redox_Workup.ipynb`. Everything you can change lives in the single
 
 | Parameter | What it does |
 |---|---|
-| `DATA_DIR` | Folder containing the `.asc` files for this sweep |
+| `DATA_DIR` | Folder containing the `.SPC` files for this sweep |
 | `Electrode_Voltage` | Offset (mV) added to each filename's voltage |
 | `isosbestic1`, `isosbestic2`, `Apex` | Starting positions for the wavelength-picker sliders (Part 1) |
 | `num_potentials` | `1` for a single midpoint potential, `2` for two overlapping ones |
@@ -36,9 +39,10 @@ Open `UVVis_Redox_Workup.ipynb`. Everything you can change lives in the single
 
 **Steps:**
 
-1. Set `DATA_DIR` to the folder with this sweep's `.asc` files (named only by their
-   voltage, e.g. `-200.asc`, `0.asc`, `150.asc` — other characters in the filename break
-   the sort/tagging).
+1. Set `DATA_DIR` to the folder with this sweep's `.SPC` files (named only by their
+   voltage, e.g. `-200.SPC`, `0.SPC`, `150.SPC` — other characters in the filename break
+   the sort/tagging). The notebook parses `.SPC` directly to `.csv` itself — no separate
+   conversion step needed.
 2. Set `sweep_label` to `"oxi"` or `"red"`, matching which sweep this run is.
 3. **Run All.**
 4. In Part 1, drag the three sliders (`isosbestic1`, `isosbestic2`, `Apex`) until the
@@ -59,7 +63,7 @@ Also written along the way: `Full_data.xlsx` (Part 1) and `PotentialFraction.xls
 (Part 2) — intermediate files, not needed for step 2 below.
 
 7. **Repeat steps 1-6** for the other sweep direction (flip `sweep_label` to the other
-   value, point `DATA_DIR` at that sweep's `.asc` files).
+   value, point `DATA_DIR` at that sweep's `.SPC` files).
 
 ## 2. Plot both sweeps together
 
@@ -71,8 +75,8 @@ python plot_together.py
 
 It reads both files, reconstructs each fitted curve (automatically using whichever
 equation that file used — one potential or two, independently for each sweep), and
-reproduces the combined plot from `Echem_plot_together.m`: both fitted curves, both
-sets of raw data points, bold axis labels, "Oxidative"/"Reductive" legend.
+plots them together: both fitted curves, both sets of raw data points, bold axis
+labels, "Oxidative"/"Reductive" legend.
 
 **Output:**
 - `oxi_red_together.png` — the combined plot
@@ -99,10 +103,12 @@ VoltageDisplay = (-250, 600)    # x-axis display window
 
 - **`ModuleNotFoundError`** — install the missing package (see Requirements) and
   restart the kernel.
-- **`ValueError: could not convert string to float`** while reading `.asc`/`.csv`
-  files in Part 1 — check for a non-numeric filename in `DATA_DIR` (the notebook
-  already ignores its own output files like `oxi.xlsx`, but any other stray file with
-  a non-numeric name will trigger this).
+- **`ValueError: <file>: header says N points ... bytes remain after the header`** —
+  a `.SPC` file's byte layout didn't match what `parse_spc()` expects (see above).
+- **`ValueError: could not convert string to float`** while reading `.csv` files in
+  Part 1 — check for a non-numeric filename in `DATA_DIR` (the notebook already ignores
+  its own output files like `oxi.xlsx`, but any other stray file with a non-numeric name
+  will trigger this).
 - **`PermissionError`** on saving an `.xlsx` — the file is open elsewhere (e.g. in
   Excel). Both the notebook and `plot_together.py` handle this by saving to a
   `..._new.xlsx` fallback automatically; close the original file and re-run to
