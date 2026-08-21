@@ -3,5 +3,7 @@ Dummy atoms are inserted immediately before ENDMDL.
 Naming convention:
 PBD submitted to Castp: protein.pdb
 Bulb JSON: protein.json
-Visualization comand:
+Chimera Visualization comand:
 size byattribute bfactor :DUM 
+If command doesn't work try put size_by_bfactor.py into the same folder and in chimera cmd:
+open size_by_bfactor.py

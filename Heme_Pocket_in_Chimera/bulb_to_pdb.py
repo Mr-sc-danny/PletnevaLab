@@ -1,6 +1,6 @@
 """
 Insert CASTp bulb.json spheres as dummy atoms into an existing PDB.
-Dummy atoms are inserted immediately before ENDMDL.
+Dummy atoms are inserted immediately before END.
 Naming convention:
 PBD submitted to Castp: protein.pdb
 Bulb JSON: protein.json
@@ -50,12 +50,12 @@ with open(input_pdb, "r") as pdb_file:
 
 insert_index = None
 for idx, line in enumerate(pdb_lines):
-    if line.strip() == "ENDMDL":
+    if line.strip() == "END":
         insert_index = idx
         break
 
 if insert_index is None:
-    raise ValueError("ENDMDL not found in input PDB.")
+    raise ValueError("END not found in input PDB.")
 
 max_serial = 0
 for line in pdb_lines:
