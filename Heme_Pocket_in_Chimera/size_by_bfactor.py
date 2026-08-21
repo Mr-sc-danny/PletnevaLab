@@ -6,5 +6,6 @@ def size_by_bfactor(session, resname="DUM", scale=1.0):
     for a in target:
         if a.bfactor is not None:
             a.radius = a.bfactor * scale
+            a.draw_mode = a.SPHERE_STYLE  # switch out of stick mode so radius shows
 
 size_by_bfactor(session)
