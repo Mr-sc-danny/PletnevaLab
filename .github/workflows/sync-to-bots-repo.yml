@@ -1,0 +1,45 @@
+name: Sync flat files to bots repo
+
+# Runs whenever the normal repo changes. workflow_dispatch lets you also
+# trigger it manually from the Actions tab to test or force a re-sync.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source (normal) repo
+        uses: actions/checkout@v4
+        with:
+          path: source-repo
+
+      - name: Checkout target (bots) repo
+        uses: actions/checkout@v4
+        with:
+          repository: Mr-sc-danny/PletnevaLabForBots
+          path: target-repo
+          # Needs a token with write access to the TARGET repo. The default
+          # GITHUB_TOKEN in this workflow can only write to the repo the
+          # workflow runs in, so a Personal Access Token is required here.
+          token: ${{ secrets.BOTS_REPO_PAT }}
+
+      - name: Run sync script
+        run: python3 source-repo/scripts/sync_repos.py source-repo target-repo
+
+      - name: Commit and push changes to bots repo
+        working-directory: target-repo
+        run: |
+          if [ "$(cat .sync_changed)" = "1" ]; then
+            rm -f .sync_changed
+            git config user.name "repo-sync-bot"
+            git config user.email "repo-sync-bot@users.noreply.github.com"
+            git add -A
+            git commit -m "Auto-sync from normal repo ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
+            git push
+          else
+            rm -f .sync_changed
+            echo "Nothing to commit."
+          fi
